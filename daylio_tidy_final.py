@@ -4,7 +4,7 @@ import numpy as np
 import datetime
 
 #define path and name of file to read
-daylio_csv = 'daylio_export.csv'
+daylio_csv = 'daylio_export_public.csv'
 
 #read the file, ignoring weekday and time and adding columns as needed
 df = pd.read_csv(daylio_csv, header = 0, usecols = [0,1,4,5,6,7], names = ['Year', 'Date', 'Mood', 'Obs', 'Note', 'contA'], skipinitialspace=True, quotechar='"', doublequote=False, lineterminator='"')
@@ -82,7 +82,11 @@ dummy = pd.get_dummies(df.Obs.apply(pd.Series), prefix='', prefix_sep='').sum(le
 df = pd.concat([df, dummy], axis = 1)
 
 #Remove meaningless columns
-df.drop(['nan', ' etc '], axis=1, inplace=True)
+if 'nan' in list(df):
+	df.drop(['nan'], axis=1, inplace=True)
+if 'etc' in list(df):
+	df.drop(['etc'], axis=1, inplace=True)
+
 
 #QA
 print(df.head(20))
